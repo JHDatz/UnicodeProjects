@@ -30,6 +30,9 @@ on industry and soundness of research.
 | DistilBERT | Pretrained | 0.9803 | 0.9231 | 0.9829 | 0.9699 | 0.9816 |
 | XLM-RoBERTa | Pretrained | 0.9553 | 0.8544 | 0.9698 | 0.9382 | 0.9625 |
 
+Table data on Sensitivity, Specificity etc. differs from the in-presentation table
+due to different formulas being applied.
+
 </center>
 
 The score most valued for our use case was the sensitivity, so we label the best
@@ -41,6 +44,10 @@ of the dataset (7,000 datapoints) to deal with class imbalance issues.
 **Final Presentation on Google Slides:**
 
 https://docs.google.com/presentation/d/14rEB-cdVIzm6ITT4htV-2WRAQc1vFt29-4AF6MiwzWw/edit?usp=sharing
+
+**Final Presentation Video:**
+
+https://www.youtube.com/watch?v=Ff__8mj2oAI&t=5740s&ab_channel=SwapneelMehta
 
 **Unicode Research:**
 
