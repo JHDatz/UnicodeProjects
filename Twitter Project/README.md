@@ -53,3 +53,6 @@ https://www.youtube.com/watch?v=Ff__8mj2oAI&t=5740s&ab_channel=SwapneelMehta
 
 https://djunicode.in/
 
+*This Folder represents the most up-to-date version of the project. For seeing
+the project as it looked a week after the Final Presentation, please see the
+Sports Injury Classification Repository.*
