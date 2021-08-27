@@ -6,10 +6,14 @@ for students to engage in.
 
 The goal of this project is to create a computer program that can classify injury
 reports from twitter data in Baseball. The best model found during the 8-week course
-and competition was a pre-trained RoBERTa Neural Network.
+and competition was a pre-trained RoBERTa Neural Network. The long-term goal of this
+project is to collect all injury data possible for Baseball players so that a
+more direct analysis of the impact of injuries can be completed.
 
 Among all applicants, this project won 1st place for its direct impact/inspiration
 on industry and soundness of research.
+
+<center>
 
 |  Model  |  Data Type  |  Sensitivity  | Specificity |  Precision  |  Accuracy  |  F1 Score  |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -26,10 +30,11 @@ on industry and soundness of research.
 | DistilBERT | Pretrained | 0.9803 | 0.9231 | 0.9829 | 0.9699 | 0.9816 |
 | XLM-RoBERTa | Pretrained | 0.9553 | 0.8544 | 0.9698 | 0.9382 | 0.9625 |
 
-The score most valued for our use case was the sensitivity, so we label the best
-"classical" machine learning model and best neural net model with bold text.
+</center>
 
-All classical models were trained on the full dataset (15,000 datapoints) using 
+The score most valued for our use case was the sensitivity, so we label the best
+"classical" machine learning model and best neural net model with bold text. All 
+classical models were trained on the full dataset (15,000 datapoints) using 
 stratified sampling, while all Neural Networks were completed on a curated sample 
 of the dataset (7,000 datapoints) to deal with class imbalance issues.
 
