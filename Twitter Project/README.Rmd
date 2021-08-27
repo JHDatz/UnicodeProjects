@@ -10,7 +10,3 @@ and competition was a pre-trained XLNet Neural Network.
 
 Among all applicants, this project won 1st place for its direct impact/inspiration
 on industry and soundness of research.
-
-```{r}
-knitr::kable(head(read.csv('results.csv')), format = "simple")
-```
