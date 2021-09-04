@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Scraping Tools
 
-Provides all tools for getting data onto the pi and submitting back to google drive.
+Provides all tools for getting data onto/off the pi and submitting back to google drive.
 """
 
 from pydrive.auth import GoogleAuth
@@ -46,55 +44,36 @@ def save_response_content(response, destination):
                 f.write(chunk)
                 
 def download_files():
-    
-    file_id = '1dFLBjiRkDtuDVDZWIKLr9mJHN2IBOiEn'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/merged.csv'
-    download_file_from_google_drive(file_id, destination)
-    
-    file_id = '1aZZWt7Qa-iRLf5E8L7PcrHkEeF9Jthjt'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/filtered.csv'
-    download_file_from_google_drive(file_id, destination)
-    
-    file_id = '1GqA10Vb3CkLqJcXnXB_RmnPP34GJZzGs'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/clean.csv'
-    download_file_from_google_drive(file_id, destination)
-    
-    file_id = '1vsT-1FT_d6EkVxLYmOqM0grmPCI2PnT4'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/accountList.txt'
-    download_file_from_google_drive(file_id, destination)
-    
-    file_id = '1p4qokPg_5Br1YH3_blM9pkonLPg4WTSO'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/brokenList.txt'
-    download_file_from_google_drive(file_id, destination)
-    
-    file_id = '1HZAKkQuSoIkhPVZJfyDvnq3ziIIRD5BK'
-    destination = '/home/pi/Desktop/coding/python/Twitter Project/labeledTweets.txt'
-    download_file_from_google_drive(file_id, destination)
+
+    file = open('download_ids_and_locations.csv')
+    ids_and_locations = [line.rstrip('\n').split(',') for line in file.readlines()]
+    file.close()
+
+    for i in range(len(ids_and_locations)):
+        file_id = ids_and_locations[i][0]
+        destination = ids_and_locations[i][1]
+        download_file_from_google_drive(file_id, destination)
     
 def upload_files():
     gauth = GoogleAuth()          
     drive = GoogleDrive(gauth)
-    
-    gfile = drive.CreateFile({'parents': [{'id': '1WJz-7MLXT1B1CyecyuMzPCJKhp8LrHh0'}],
-                              'id': '1dFLBjiRkDtuDVDZWIKLr9mJHN2IBOiEn'})
-    
-    gfile.SetContentFile('merged.csv')
-    gfile.Upload()
-    time.sleep(5)
-    
-    gfile = drive.CreateFile({'parents': [{'id': '1WJz-7MLXT1B1CyecyuMzPCJKhp8LrHh0'}],
-                              'id': '1aZZWt7Qa-iRLf5E8L7PcrHkEeF9Jthjt'})
-    
-    gfile.SetContentFile('filtered.csv')
-    gfile.Upload()
-    time.sleep(5)
-    
-    gfile = drive.CreateFile({'parents': [{'id': '1WJz-7MLXT1B1CyecyuMzPCJKhp8LrHh0'}],
-                              'id': '1GqA10Vb3CkLqJcXnXB_RmnPP34GJZzGs'})
-    
-    gfile.SetContentFile('clean.csv')
-    gfile.Upload()
-    time.sleep(5)
+
+    file = open('upload_ids_and_locations.csv')
+    ids_and_locations = [line.rstrip('\n').split(',') for line in file.readlines()]
+    file.close()
+
+    for i in range(len(ids_and_locations)):
+        file_id = ids_and_locations[i][0]
+        destination = ids_and_locations[i][1]
+        download_file_from_google_drive(file_id, destination)
+
+        gfile = drive.CreateFile({'parents': [{'id': ids_and_locations[i][0]}],
+                                  'id': ids_and_locations[i][1]})
+
+        filename = ids_and_locations[i][2].split('//')
+        filename = filename[len(filename)-1]
+        gfile.SetContentFile(filename)
+        time.sleep(5)
     
 def scrape_twitter():
     
