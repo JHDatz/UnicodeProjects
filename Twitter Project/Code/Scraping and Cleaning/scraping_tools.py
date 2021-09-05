@@ -45,35 +45,35 @@ def save_response_content(response, destination):
                 
 def download_files():
 
-    file = open('download_ids_and_locations.csv')
-    ids_and_locations = [line.rstrip('\n').split(',') for line in file.readlines()]
-    file.close()
-
-    for i in range(len(ids_and_locations)):
-        file_id = ids_and_locations[i][0]
-        destination = ids_and_locations[i][1]
-        download_file_from_google_drive(file_id, destination)
+    with open('download_ids_and_locations.csv') as file:
+        
+        ids_and_locations = [line.rstrip('\n').split(',') 
+        for line in file.readlines()]
+    
+        for i in range(len(ids_and_locations)):
+            file_id = ids_and_locations[i][0]
+            destination = ids_and_locations[i][1]
+            download_file_from_google_drive(file_id, destination)
     
 def upload_files():
     gauth = GoogleAuth()          
     drive = GoogleDrive(gauth)
 
-    file = open('upload_ids_and_locations.csv')
-    ids_and_locations = [line.rstrip('\n').split(',') for line in file.readlines()]
-    file.close()
-
-    for i in range(len(ids_and_locations)):
-        file_id = ids_and_locations[i][0]
-        destination = ids_and_locations[i][1]
-        download_file_from_google_drive(file_id, destination)
-
-        gfile = drive.CreateFile({'parents': [{'id': ids_and_locations[i][0]}],
-                                  'id': ids_and_locations[i][1]})
-
-        filename = ids_and_locations[i][2].split('//')
-        filename = filename[len(filename)-1]
-        gfile.SetContentFile(filename)
-        time.sleep(5)
+    with open('upload_ids_and_locations.csv') as file:
+        
+        ids_and_locations = [line.rstrip('\n').split(',') 
+        for line in file.readlines()]
+    
+        for i in range(len(ids_and_locations)):
+    
+            gfile = drive.CreateFile({'parents': [{'id': ids_and_locations[i][0]}],
+                                      'id': ids_and_locations[i][1]})
+    
+            filename = ids_and_locations[i][2].split('/')
+            filename = filename[len(filename)-1]
+            gfile.SetContentFile(filename)
+            gfile.Upload()
+            time.sleep(5)
     
 def scrape_twitter():
     
@@ -93,12 +93,13 @@ def scrape_twitter():
         try:
             c = twint.Config()
             c.Username = userids[count]
-            c.Limit = 500
+            c.Limit = 100
             c.Store_csv = True
             c.Output = 'TweetData/' + userids[count] + ".csv"
             c.Hide_output = True
             
             twint.run.Search(c)
+            del c
             time.sleep(15)
             count+=1
             

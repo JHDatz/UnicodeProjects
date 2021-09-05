@@ -69,17 +69,18 @@ def scrape_to_merge():
     fileList = [os.getcwd()  + '/TweetData/' + files 
                 for files in os.listdir(os.getcwd()  + '/TweetData')]
 
-    data = pd.read_csv('merged.csv')
+    data = pd.read_csv('merged2.csv')
     
     for i in range(len(fileList)):
         data = data.append(pd.read_csv(fileList[i]))
         
     data = data.drop_duplicates()
-    data.to_csv('merged.csv', index=False)
+    data.to_csv('merged2.csv', index=False)
+    del data
 
 def merged_to_filtered():
 
-    raw_data = pd.read_csv('merged.csv')
+    raw_data = pd.read_csv('merged2.csv')
     
     raw_data['urls'] = raw_data['urls'].apply(lambda x: str(x).lstrip("[").rstrip("]"))
     raw_data['link_present'] = raw_data['urls'].apply(lambda x: ifelse(len(x) > 0, 1, 0))
@@ -105,6 +106,9 @@ def merged_to_filtered():
     filtered_data = filtered_data.append(raw_data[where_diff], ignore_index=True)
     
     filtered_data.to_csv('filtered.csv', index=False)
+    del filtered_data
+    del raw_data
+    del labeledData
     
 def filtered_to_clean():
 
@@ -128,6 +132,7 @@ def filtered_to_clean():
     data['clean'] = data['tweet'].apply(lambda txt: clean_text(txt))
     data.dropna(inplace = True)
     data.to_csv('clean.csv', index=False)
+    del data
     
 def get_data_to_label():
     
@@ -139,7 +144,5 @@ def get_data_to_label():
     
     samples_to_label = data.sample(1000)
     samples_to_label.to_csv('sampled.csv')
-    
-    positives_to_label = data.sample(10000)
-    data['clean'] = data['tweet'].apply(lambda txt: clean_text(txt))
+    del data
     
