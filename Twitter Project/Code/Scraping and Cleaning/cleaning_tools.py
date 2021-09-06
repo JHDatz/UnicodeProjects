@@ -144,5 +144,15 @@ def get_data_to_label():
     
     samples_to_label = data.sample(1000)
     samples_to_label.to_csv('sampled.csv')
+
+    lgr = load('logistic_regression.joblib')
+    v_tfidf = load('tfidf.joblib')
+
+    data = data.sample(100000)
+    data['clean'] = data['tweet'].apply(lambda txt: clean_text(txt))
+    data['lgr_predictions'] = lgr.predict(v_tfidf.transform(data['clean']))
+    positives = data[data['lgr_predictions'] == 1]
+    positives = positives[['injury_report', 'tweet']]
+    positives.to_csv('positive_samples.csv')
     del data
     
