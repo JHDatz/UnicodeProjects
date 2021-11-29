@@ -8,11 +8,14 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 import requests
 import time
+import os
+import shutil
 
 # for twint
 
 import twint
 import nest_asyncio
+from datetime import date
 
 def download_file_from_google_drive(id, destination):
     URL = "https://docs.google.com/uc?export=download"
@@ -68,22 +71,48 @@ def upload_files():
     
             gfile = drive.CreateFile({'parents': [{'id': ids_and_locations[i][0]}],
                                       'id': ids_and_locations[i][1]})
-    
+
+            file_location = ids_and_locations[i][2]
             filename = ids_and_locations[i][2].split('/')
             filename = filename[len(filename)-1]
-            gfile.SetContentFile(filename)
-            gfile.Upload()
+            cwd = os.getcwd()
+            new_file_location = cwd + '\\' + filename
+            starting_file_location = file_location.rstrip(filename)
+
+            if 'Classical Models' in file_location:
+                os.chdir(os.getcwd() + '\\' + 'Classical Models')
+                gfile.SetContentFile(filename)
+                gfile.Upload()
+                os.chdir(os.getcwd().rstrip('\\Classical Models'))
+            else:
+                gfile.SetContentFile(filename)
+                gfile.Upload()
+
             time.sleep(5)
+
+def get_file_list(fileName):
+    file = open(fileName)
+    text = file.readlines()
+    text = [line.rstrip('\n') for line in text]
+    file.close()
+    return text
+
+def write_file_list(list, filename):
+    file = open(filename, 'w')
+
+    for entry in list:
+        file.write(entry + '\n')
+    file.close()
+
+def get_current_date(): return str(date.today().year) + '-' + str(date.today().month) + '-' + str(date.today().day)
     
-def scrape_twitter():
+def scrape_twitter_accounts():
     
     nest_asyncio.apply()
 
-    file = open('accountList.txt')
-    text = file.readlines()
-    file.close()
-    userids = [userid.strip('\n') for userid in text]
-    broken_ids = list()
+    userids = get_file_list('lists\\accountList.txt')
+    broken_ids = get_file_list('lists\\brokenList.txt')
+    current_date = get_current_date()
     count=0
     
     while count < len(userids) - 1:
@@ -93,8 +122,9 @@ def scrape_twitter():
         try:
             c = twint.Config()
             c.Username = userids[count]
-            c.Limit = 100
+            c.Limit = 1000
             c.Store_csv = True
+            c.Since = current_date
             c.Output = 'TweetData/' + userids[count] + ".csv"
             c.Hide_output = True
             
@@ -107,3 +137,26 @@ def scrape_twitter():
             broken_ids.append(userids[count])
             
         count+=1
+
+    write_file_list(set(userids) - set(broken_ids), 'lists\\accountList.txt')
+    write_file_list(set(broken_ids), 'lists\\brokenList.txt')
+
+def scrape_twitter_hashtags():
+
+    nest_asyncio.apply()
+
+    hashtagList = get_file_list('lists\\hashtagList.txt')
+    current_date = get_current_date()
+
+    for hashtags in hashtagList:
+
+        c = twint.Config()
+        c.Search = hashtags
+        c.Since = current_date
+        c.Lang = 'en'
+        c.Store_csv = True
+        c.Output = 'TweetData/' + hashtags + '.csv'
+        c.Hide_output = True
+
+        twint.run.Search(c)
+        time.sleep(15)
